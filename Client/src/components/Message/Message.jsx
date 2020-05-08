@@ -5,7 +5,6 @@ const Message = ({ message: {user, text }, name }) => {
   let isSentByCurrentUser = false;
 
   const trimmedName = name.trim().toLowerCase();
-
   if(user === trimmedName){
     isSentByCurrentUser = true;
   }
@@ -13,7 +12,7 @@ const Message = ({ message: {user, text }, name }) => {
   return (
     isSentByCurrentUser ? (
       <div className="messageContainer justifyEnd">
-        <p className="sendText pr-10">{trimmedName}</p>
+        <p className="sentText pr-10">{trimmedName}</p>
         <div className="messageBox backgroundBlue">
           <p className="messageText colorWhite">
             {text}
@@ -29,7 +28,7 @@ const Message = ({ message: {user, text }, name }) => {
             {text}
           </p>
         </div>
-        <p className="sendText">{trimmedName}</p>
+        <p className="sentText">{user}</p>
       </div>
     )
   )

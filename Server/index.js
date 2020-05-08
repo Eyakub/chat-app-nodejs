@@ -20,9 +20,11 @@ io.on('connection', (socket) => {
       return callback(error);
     }
     socket.emit('message', {user: 'admin', text: `${user.name}, welcome to the room ${user.room}`});
-    socket.broadcast.to(user.room).emit('message', {user: 'admi', text: `${user.name}, has joined!`});
+    socket.broadcast.to(user.room).emit('message', {user: 'admin', text: `${user.name}, has joined!`});
 
     socket.join(user.room);
+
+    io.to(user.room).emit('roomData', {room: user.room, users:getUsersInRoom(user.room)})
 
     // as its getting call all time, so if no error pass nothing
     callback();
@@ -30,14 +32,18 @@ io.on('connection', (socket) => {
 
   socket.on('sendMessage', (message, callback) => {
     const user = getUser(socket.id);
-    console.log('user -> ', user)
     io.to(user.room).emit('message', {user: user.name, text: message})
+    io.to(user.room).emit('roomData', {user: user.name, users:getUsersInRoom(user.room)})
 
     callback();
   })
 
   socket.on('disconnect', () => {
-    console.log('User had left...!')
+    const user = removeUser(socket.id);
+
+    if(user){
+      io.to(user.room).emit('message', {user: 'admin', text: `${user.name} has left.`})
+    }
   })
 })
 
